@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat with {{ partner }} - Exiels Chatbox</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Chat with {{ partner }}</h2>
+    <div id="messages"></div>
+    <form id="chatForm">
+      <input type="text" id="message" placeholder="Type your message..." autocomplete="off" required>
+      <button type="submit">Send</button>
+    </form>
+    <div class="alt-option">
+      <a href="/chat">← Select Partner</a> | 
+      <a href="/group_chat">→ Group Chat</a> | 
+      <a href="/customization">⚙ Customize</a> | 
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('message');
+    const chatBox = document.getElementById('messages');
+    const partner = "{{ partner }}";
+
+    socket.emit('join_room', { partner });
+
+    function addMessage(sender, message, timestamp) {
+      const div = document.createElement('div');
+      div.classList.add('message');
+      div.innerHTML = `<div class="username">${sender}</div><div>${message}</div><div class="timestamp">${timestamp}</div>`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    fetch(`/messages/${partner}`)
+      .then(res => res.json())
+      .then(messages => {
+        messages.forEach(msg => {
+          addMessage(msg.sender, msg.message, msg.timestamp);
+        });
+      });
+
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (messageInput.value.trim()) {
+        socket.emit('private_message', {
+          receiver: partner,
+          message: messageInput.value
+        });
+        messageInput.value = '';
+      }
+    });
+
+    socket.on('new_message', data => {
+      addMessage(data.sender, data.message, data.timestamp);
+    });
+  </script>
+</body>
+</html>

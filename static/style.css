@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #0f0f1a, #000000);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    width: 100%;
+    max-width: 450px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #00ffff;
+    margin-bottom: 1.5rem;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: #222;
+    color: #fff;
+    font-size: 1rem;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    width: 100%;
+    padding: 0.8rem;
+    background: #00ffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background: #00cccc;
+  }
+  
+  .alt-option {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .alt-option a {
+    color: #00ffff;
+    text-decoration: none;
+  }
+  
+  .chat-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  #messages {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  
+  .message {
+    background: #1f1f1f;
+    padding: 0.6rem;
+    margin: 0.4rem 0;
+    border-radius: 0.4rem;
+    color: #fff;
+    box-shadow: 0 0 8px #00ffff33;
+  }
+  
+  .username {
+    color: #00ffff;
+    font-weight: bold;
+  }
+  
+  .timestamp {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.2rem;
+    text-align: right;
+  }
+  
+  @media (max-width: 500px) {
+    .container {
+      padding: 1.5rem;
+    }
+  
+    h2 {
+      font-size: 1.4rem;
+    }
+  }
+  

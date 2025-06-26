@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Group Chat - Exiels Chatbox</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Group Chat – {{ username }}</h2>
+    <div id="messages">
+      {% for sender, content, timestamp in messages %}
+        <div class="message">
+          <div class="username">{{ sender }}</div>
+          <div>{{ content }}</div>
+          <div class="timestamp">{{ timestamp }}</div>
+        </div>
+      {% endfor %}
+    </div>
+    <form id="messageForm">
+      <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off" required>
+      <button type="submit">Send</button>
+    </form>
+    <div class="alt-option">
+      <a href="/chat">← Private Chat</a> | 
+      <a href="/customization">⚙ Customize</a> | 
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('messageForm');
+    const input = document.getElementById('messageInput');
+    const messagesDiv = document.getElementById('messages');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (input.value.trim()) {
+        socket.emit('group_message', { message: input.value });
+        input.value = '';
+      }
+    });
+
+    socket.on('new_group_message', data => {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message');
+      msgDiv.innerHTML = `<div class="username">${data.sender}</div><div>${data.message}</div><div class="timestamp">${data.timestamp}</div>`;
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  </script>
+</body>
+</html>

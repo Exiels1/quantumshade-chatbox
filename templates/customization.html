@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customize Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Customize Your Chat</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <label>Background Image (upload):</label>
+      <input type="file" name="background_image">
+
+      <label>Or Background Image (URL):</label>
+      <input type="text" name="background_url" placeholder="Paste an image link...">
+
+      <label>Blur Level:</label>
+      <select name="blur_level">
+        {% for i in range(0, 21) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Theme Color:</label>
+      <input type="color" name="theme_color" value="#00f2ff">
+
+      <button type="submit">Save Changes</button>
+    </form>
+    <div class="alt-option">
+      <a href="/group_chat">← Back to Chat</a>
+    </div>
+  </div>
+</body>
+</html>

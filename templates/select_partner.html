@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Partner - Exiels Chatbox</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Select a Chat Partner</h2>
+    <ul>
+      {% for user in users %}
+        <li><a href="{{ url_for('private_chat', partner=user) }}">{{ user }}</a></li>
+      {% endfor %}
+    </ul>
+    <div class="alt-option">
+      <a href="/group_chat">→ Group Chat</a> | 
+      <a href="/customization">⚙ Customize</a> | 
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+</body>
+</html>

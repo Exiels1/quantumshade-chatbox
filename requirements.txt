@@ -2,3 +2,4 @@ Flask
 flask_socketio
 eventlet
 bcrypt
+gunicorn

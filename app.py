@@ -73,6 +73,7 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        
         profile_pic_file = request.files.get('profile_pic')
         profile_pic_url = request.form.get('profile_pic_url', '').strip()
 
@@ -81,7 +82,7 @@ def signup():
             filename = secure_filename(profile_pic_file.filename)
             profile_pic_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             profile_pic = 'profile_pics/' + filename
-        elif profile_pic_url:
+        elif profile_pic_url != '':
             profile_pic = profile_pic_url
 
         with sqlite3.connect('chatbox.db') as conn:
@@ -92,7 +93,9 @@ def signup():
                 return redirect(url_for('login'))
             except sqlite3.IntegrityError:
                 return 'Username already exists'
+                
     return render_template('signup.html')
+
 
 @app.route('/group_chat')
 def group_chat():
@@ -130,12 +133,15 @@ def handle_group_message(data):
 def chat():
     if 'username' not in session:
         return redirect(url_for('login'))
+
     username = session['username']
     with sqlite3.connect('chatbox.db') as conn:
         c = conn.cursor()
-        c.execute("SELECT username FROM users WHERE username != ?", (username,))
-        users = [u[0] for u in c.fetchall()]
+        c.execute("SELECT username, profile_pic FROM users WHERE username != ?", (username,))
+        users = c.fetchall()
+
     return render_template('select_partner.html', users=users)
+
 
 @app.route('/chat/<partner>')
 def private_chat(partner):

@@ -2,28 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Select Partner - Exiels Chatbox</title>
+  <title>Select Chat Partner - Exiels Chatbox</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #121212);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #00ffff;
+      margin-bottom: 1rem;
+    }
+
+    .partner-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .partner-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      padding: 1rem;
+      border-radius: 1rem;
+      width: 200px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .partner-card:hover {
+      transform: scale(1.05);
+    }
+
+    .partner-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
+    }
+
+    .partner-card a {
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .partner-card {
+        width: 150px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Select a Chat Partner</h2>
-    <ul class="partner-list">
-      {% for user in users %}
-      <li>
-        <a href="{{ url_for('private_chat', partner=user) }}">
-          <img src="{{ user.profile_pic }}" alt="{{ user }}" class="avatar">
-          {{ user }}
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-    
-    <div class="alt-option">
-      <a href="/group_chat">→ Group Chat</a> | 
-      <a href="/customization">⚙ Customize</a> | 
-      <a href="/logout">Logout</a>
-    </div>
+  <h2>Select a Chat Partner</h2>
+  <div class="partner-list">
+    {% for user in users %}
+      <div class="partner-card">
+        <img src="{{ user[1] if user[1].startswith('http') else url_for('static', filename=user[1]) }}" alt="Profile Pic">
+        <div>{{ user[0] }}</div>
+        <a href="/chat/{{ user[0] }}">Chat Now</a>
+      </div>
+    {% endfor %}
   </div>
 </body>
 </html>

@@ -8,11 +8,17 @@
 <body>
   <div class="container">
     <h2>Select a Chat Partner</h2>
-    <ul>
+    <ul class="partner-list">
       {% for user in users %}
-        <li><a href="{{ url_for('private_chat', partner=user) }}">{{ user }}</a></li>
+      <li>
+        <a href="{{ url_for('private_chat', partner=user) }}">
+          <img src="{{ user.profile_pic }}" alt="{{ user }}" class="avatar">
+          {{ user }}
+        </a>
+      </li>
       {% endfor %}
     </ul>
+    
     <div class="alt-option">
       <a href="/group_chat">→ Group Chat</a> | 
       <a href="/customization">⚙ Customize</a> | 

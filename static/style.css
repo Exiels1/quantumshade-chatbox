@@ -124,4 +124,46 @@
       font-size: 1.4rem;
     }
   }
+/* Base: mobile first */
+body { font-size: 16px; }
+
+/* Tablets */
+@media (min-width: 600px) {
+  .chat-container {
+    max-width: 90%;
+    margin: 1rem auto;
+  }
+  input[type="text"], button {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Desktops */
+@media (min-width: 1024px) {
+  .chat-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+  body { font-size: 18px; }
+}
+body {
+  background: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+}
+/* Buttons */
+button {
+  background: #00ffff;
+  color: #000;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #00cccc;
+}
+input, textarea {
+  background: #1f1f1f;
+  color: #fff;
+}
   

@@ -2,12 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sign Up - Exiels Chatbox</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>QuantumShade Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f1c, #000);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+      background-image: url('/static/image/bg-lines.png'); /* Optional overlay */
+      background-size: cover;
+      background-position: center;
+    }
+
+    .signup-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00f2ff66;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #00f2ff;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.7rem 0;
+      border: none;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 0.7rem;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #00f2ff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background: #00c2d6;
+    }
+
+    .alt-option {
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .alt-option a {
+      color: #00f2ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .signup-container {
+        padding: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      input, button {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .signup-container {
+        padding: 1rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Exiels Chatbox Sign Up</h2>
+  <div class="signup-container">
+    <h2>QuantumShade Sign Up</h2>
     <form method="POST" enctype="multipart/form-data">
       <input type="text" name="username" placeholder="Username" required>
       <input type="password" name="password" placeholder="Password" required>

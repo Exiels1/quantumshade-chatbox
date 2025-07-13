@@ -72,7 +72,17 @@ def login():
         flash("Invalid username or password", "error")
         return redirect(url_for('login'))
 
-    return render_template('login.html', user=None)
+    # ✅ For GET request, check if user is logged in and fetch bg data
+    user = None
+    if 'username' in session:
+        conn = sqlite3.connect('chatbox.db')
+        c = conn.cursor()
+        c.execute("SELECT background_url FROM customization WHERE username = ?", (session['username'],))
+        row = c.fetchone()
+        user = type('User', (object,), {"bg_image_url": row[0] if row and row[0] else None})()
+        conn.close()
+
+    return render_template('login.html', user=user)
 
 
 @app.route('/signup', methods=['GET', 'POST'])

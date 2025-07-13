@@ -109,10 +109,11 @@
   </style>
 </head>
 <body {% if user and user.bg_image_url %}
-      style="background-image: url('{{ user.bg_image_url }}');"
+      style="background-image: url('{{ user.bg_image_url }}'); background-size: cover; background-position: center;"
       {% else %}
-      style="background-color: #111;"
+      style="background: linear-gradient(135deg, #0f0f1c, #000); background-image: url('/static/image/bg-lines.png'); background-size: cover; background-position: center;"
       {% endif %}>
+
 
   <div class="login-container">
     <h2>QuantumShade Login</h2>

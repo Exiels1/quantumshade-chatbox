@@ -1,7 +1,7 @@
 import eventlet
 eventlet.monkey_patch()
 
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, flash, render_template, request, session, redirect, url_for, jsonify
 from flask_socketio import SocketIO, emit, join_room
 import sqlite3
 from datetime import datetime
@@ -57,16 +57,23 @@ def index():
 def login():
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password'].encode('utf-8')
-        with sqlite3.connect('chatbox.db') as conn:
-            c = conn.cursor()
-            c.execute("SELECT password FROM users WHERE username = ?", (username,))
-            row = c.fetchone()
-            if row and bcrypt.checkpw(password, row[0]):
-                session['username'] = username
-                return redirect(url_for('group_chat'))
-        return 'Invalid credentials'
-    return render_template('login.html')
+        password = request.form['password']
+
+        conn = sqlite3.connect('chatbox.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE username = ?", (username,))
+        user = c.fetchone()
+        conn.close()
+
+        if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
+            session['username'] = username
+            return redirect(url_for('chat'))
+
+        flash("Invalid username or password", "error")
+        return redirect(url_for('login'))
+
+    return render_template('login.html', user=None)
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

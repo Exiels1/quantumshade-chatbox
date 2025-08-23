@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-card">
+  <h1>Welcome back</h1>
+  <form method="post">
+    <label>Username</label>
+    <input name="username" required />
+    <label>Password</label>
+    <input name="password" type="password" required />
+    <button type="submit">Login</button>
+  </form>
+  <!-- login.html snippet -->
+<p class="qs-muted">
+  <a href="{{ url_for('auth.forgot') }}">Forgot password? Reset with backup code</a>
+</p>
+  <p class="qs-muted">No account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+  <p class="qs-muted"><a href="{{ url_for('auth.forgot') }}">Forgot password? Use backup code</a></p>
+</div>
+{% endblock %}

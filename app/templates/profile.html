@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-card">
+  <h1>Your Profile</h1>
+  <form method="post" enctype="multipart/form-data">
+    <label>Status</label>
+    <input name="status" value="{{ current_user.status or '' }}" maxlength="120"/>
+    <label>Avatar</label>
+    <input type="file" name="avatar" accept="image/*"/>
+    <button type="submit">Save</button>
+  </form>
+</div>
+{% endblock %}

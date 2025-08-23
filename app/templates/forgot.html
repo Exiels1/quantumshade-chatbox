@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-card">
+  <h1>Reset with Backup Code</h1>
+  <form method="post">
+    <label>Username</label>
+    <input name="username" required />
+    <label>One Backup Code</label>
+    <input name="code" required minlength="8" maxlength="16" />
+    <label>New Password</label>
+    <input name="password" type="password" required minlength="6"/>
+    <button type="submit">Reset Password</button>
+  </form>
+  <p class="qs-muted"><a href="{{ url_for('auth.login') }}">Back to login</a></p>
+</div>
+{% endblock %}

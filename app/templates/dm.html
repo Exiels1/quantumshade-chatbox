@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-grid">
+  <aside class="qs-side">
+    <a href="{{ url_for('main.chat') }}">← Back to Global</a>
+    <div class="qs-user">
+      <div class="avatar" style="background-image:url('{{ url_for('static', filename=other.avatar) if other.avatar else '' }}')"></div>
+      <div>
+        <div class="name">@{{ other.username }}</div>
+        <div class="status">{{ other.status }}</div>
+      </div>
+    </div>
+  </aside>
+  <section class="qs-chat">
+    <div id="messages" class="qs-messages">
+      {% for m in dms %}
+        <div class="msg"><span class="u">{{ 'You' if m.sender_id==current_user.id else other.username }}</span><span class="t">{{ m.created_at.strftime('%H:%M') }}</span><div class="c">{{ m.content }}</div></div>
+      {% endfor %}
+    </div>
+    <form id="chat-form" class="qs-chat-form">
+      <input id="chat-input" placeholder="Message @{{ other.username }}..." autocomplete="off" />
+      <button>Send</button>
+    </form>
+  </section>
+</div>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script>
+  window.QS = { mode: "dm", thread_id: {{ thread_id }} };
+</script>
+{% endblock %}

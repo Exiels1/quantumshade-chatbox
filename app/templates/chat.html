@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-grid">
+  <aside class="qs-side">
+    <div class="qs-user">
+      <div class="avatar" style="background-image:url('{{ url_for('static', filename=current_user.avatar) if current_user.avatar else '' }}')"></div>
+      <div>
+        <div class="name">{{ current_user.username }}</div>
+        <div class="status">{{ current_user.status }}</div>
+      </div>
+    </div>
+    <div class="qs-users">
+      <h3>People</h3>
+      <ul>
+      {% for u in users if u.id != current_user.id %}
+        <li><a href="{{ url_for('main.dm', username=u.username) }}">@{{ u.username }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+  </aside>
+  <section class="qs-chat">
+    <div id="messages" class="qs-messages">
+      {% for m in messages %}
+        <div class="msg"><span class="u">{{ m.sender.username }}</span><span class="t">{{ m.created_at.strftime('%H:%M') }}</span><div class="c">{{ m.content }}</div></div>
+      {% endfor %}
+    </div>
+    <form id="chat-form" class="qs-chat-form">
+      <input id="chat-input" placeholder="Say something..." autocomplete="off" />
+      <button>Send</button>
+    </form>
+  </section>
+</div>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script>
+  window.QS = { mode: "room", room: "global" };
+</script>
+{% endblock %}

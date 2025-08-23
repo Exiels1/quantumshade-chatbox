@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="qs-card">
+  <h1>Create account</h1>
+  <form method="post">
+    <label>Username</label>
+    <input name="username" required minlength="3" maxlength="32"/>
+    <label>Email</label>
+    <input name="email" type="email" required />
+    <label>Password</label>
+    <input name="password" type="password" required minlength="6"/>
+    <button type="submit">Register</button>
+  </form>
+  <p class="qs-muted">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+</div>
+{% endblock %}

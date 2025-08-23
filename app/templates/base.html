@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>QuantumShade Chatbox</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/quantumshade.css') }}">
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body class="qs-bg">
+  <nav class="qs-nav">
+    <div class="qs-logo">⚡ QuantumShade</div>
+    {% if current_user.is_authenticated %}
+      <div class="qs-nav-right">
+        <a href="{{ url_for('main.chat') }}">Global</a>
+        <a href="{{ url_for('main.profile') }}">Profile</a>
+        <!-- Add somewhere in qs-nav -->
+<button id="toggle-glow" style="padding:6px 12px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--neon),var(--neon2));color:#0a0a0f;cursor:pointer;font-weight:700;">
+  Glow Mode
+</button>
+
+        <a href="{{ url_for('auth.logout') }}" class="qs-danger">Logout</a>
+      </div>
+    {% endif %}
+  </nav>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="qs-flash-wrap">
+    {% for category, message in messages %}
+      <div class="qs-flash {{category}}">{{ message }}</div>
+    {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+  <main class="qs-main">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('toggle-glow');
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('glow-mode');
+  });
+});
+</script>
+
+</html>

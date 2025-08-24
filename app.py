@@ -6,9 +6,11 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-@app.route('/')
-def index():
-    return render_template('index.html')  # Flask will look in ./templates
+app = Flask(
+    __name__,
+    template_folder="path/to/templates",
+    static_folder="path/to/static"
+)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))

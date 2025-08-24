@@ -6,10 +6,11 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
 
+
 app = Flask(
     __name__,
-    template_folder="path/to/templates",
-    static_folder="path/to/static"
+    template_folder="templates",
+    static_folder="static"
 )
 
 if __name__ == '__main__':

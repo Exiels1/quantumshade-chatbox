@@ -1,12 +1,16 @@
-from app import create_app, socketio
+import eventlet
+eventlet.monkey_patch()  # MUST be first
+
+from app import create_app, socketio  # import after monkey_patch
 
 # create the Flask app
 app = create_app()
 
-# for Render/production (Gunicorn or equivalent will call this "app")
-if __name__ != "__main__":
-    application = app  # sometimes Render expects "application"
+# For Render/production
+# Gunicorn will look for "application" by default
+application = app  # Flask app only; socketio.run() used for local dev
 
-# for local dev
+# Local development
 if __name__ == "__main__":
+    # Use SocketIO server locally
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)

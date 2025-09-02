@@ -7,7 +7,7 @@ import os
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-socketio = SocketIO(async_mode="threading", cors_allowed_origins="*")
+socketio = SocketIO(async_mode="eventlet", cors_allowed_origins="*")
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True, static_folder="static", template_folder="templates")

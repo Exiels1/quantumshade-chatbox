@@ -1,7 +1,6 @@
+from app import create_app, socketio
 import eventlet
-eventlet.monkey_patch()  # MUST be first
-
-from app import create_app, socketio  # import after monkey_patch
+eventlet.monkey_patch()
 
 # create the Flask app
 app = create_app()

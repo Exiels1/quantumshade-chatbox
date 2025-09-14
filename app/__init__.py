@@ -42,10 +42,8 @@ def create_app():
     from .models import User
     from .auth import auth_bp
     from .main import main_bp
-    from .chat import chat_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
-    app.register_blueprint(chat_bp)
 
     # Register SocketIO handlers
     from .chat import register_socketio_handlers

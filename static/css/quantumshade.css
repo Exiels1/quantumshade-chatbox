@@ -9,13 +9,9 @@ body, html {
     overflow: hidden;
 }
 
-/* Chat Container */
 .chat-container {
     display: flex;
-    flex-direction: column;
     height: 100vh;
-    background-color: #121212;
-    color: #ffffff;
 }
 
 /* Sidebar */
@@ -88,7 +84,14 @@ body, html {
     white-space: nowrap;
 }
 
-/* Chat Header */
+/* Chat Window */
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #121212;
+}
+
 .chat-header {
     display: flex;
     align-items: center;
@@ -97,23 +100,22 @@ body, html {
     border-bottom: 1px solid #333;
 }
 
-.chat-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+.chat-header .avatar {
     margin-right: 10px;
 }
 
-.chat-details h2 {
-    margin: 0;
-    font-size: 18px;
-    color: #00ffcc;
+.chat-header .details {
+    flex: 1;
 }
 
-.chat-details p {
-    margin: 0;
+.chat-header .name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.chat-header .status {
     font-size: 14px;
-    color: #888;
+    color: #00ffcc; /* Neon color for status */
 }
 
 /* Messages */
@@ -211,14 +213,4 @@ body, html {
     .chat-window {
         flex: 1;
     }
-}
-.badge {
-    background: #25D366; /* WhatsApp green */
-    color: #fff;
-    font-size: 12px;
-    padding: 3px 7px;
-    border-radius: 50%;
-    margin-left: 8px;
-    font-weight: bold;
-    box-shadow: 0 0 5px #25D366, 0 0 10px #25D366;
 }

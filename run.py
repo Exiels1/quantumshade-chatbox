@@ -1,13 +1,11 @@
-# Apply Eventlet monkey patching
 import eventlet
-eventlet.monkey_patch()
+eventlet.monkey_patch()  # Must be called before any other imports
 
-# Import the app and socketio after monkey patching
-from app import create_app, socketio
+from app import create_app, socketio  # Import after monkey_patch
 
 # Create the Flask app
 app = create_app()
 
 if __name__ == '__main__':
-    # Run the app with Socket.IO and Eventlet
-    socketio.run(app, host='0.0.0.0', port=5000)
+    # Use eventlet's WSGI server to run the app
+    eventlet.wsgi.server(eventlet.listen(('127.0.0.1', 5000)), app)

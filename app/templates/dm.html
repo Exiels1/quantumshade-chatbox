@@ -6,52 +6,66 @@
   <!-- Left Sidebar -->
   <div class="chats-sidebar">
     <div class="profile-header">
-      <img src="{{ current_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="profile-avatar">
-      <span class="profile-name">{{ current_user.username }}</span>
+      <img src="{{ current_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="Your avatar" class="profile-avatar">
+      <span class="profile-name">{{ current_user.username or 'Guest' }}</span>
     </div>
     <div class="chat-search">
       <input type="text" placeholder="Search chats" id="chatSearch">
     </div>
     <div class="chat-list" id="chatList">
-      {% for chat in chats %}
-        <a href="{{ url_for('main.dm', username=chat.partner.username) }}" class="chat-list-item {% if chat.partner.username == active_username %}active{% endif %}" data-thread="{{ chat.thread_id }}">
-          <img src="{{ chat.partner.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="chat-avatar">
-          <div class="chat-info">
-            <span class="chat-name">{{ chat.partner.username }}</span>
-            <span class="chat-preview">{{ chat.last_message_preview }}</span>
-          </div>
-          <span class="chat-time">{{ chat.last_message_time }}</span>
-        </a>
-      {% endfor %}
+      {% if chats %}
+        {% for chat in chats %}
+          <a href="{{ url_for('main.dm', username=chat.partner.username) }}" class="chat-list-item {% if chat.partner.username == active_username %}active{% endif %}" data-thread="{{ chat.thread_id }}">
+            <img src="{{ chat.partner.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ chat.partner.username }}'s avatar" class="chat-avatar">
+            <div class="chat-info">
+              <span class="chat-name">{{ chat.partner.username or 'Unknown' }}</span>
+              <span class="chat-preview">{{ chat.last_message_preview or 'No messages yet' }}</span>
+            </div>
+            <span class="chat-time">{{ chat.last_message_time or '' }}</span>
+          </a>
+        {% endfor %}
+      {% else %}
+        <p class="no-chats">No chats available</p>
+      {% endif %}
     </div>
   </div>
 
   <!-- Right Panel -->
   <div class="chat-window">
-    <div class="chat-header">
-      <img src="{{ active_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="chat-avatar">
-      <div class="chat-header-info">
-        <span class="chat-name">{{ active_user.username }}</span>
-        <span class="chat-status">{{ active_user.status }}</span>
-      </div>
-    </div>
-
-    <div class="chat-messages" id="chatMessages" data-thread-id="{{ thread_id }}">
-      {% for message in messages %}
-        <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
-          <div class="message-content">{{ message.content }}</div>
-          <div class="message-meta">
-            <span class="message-time">{{ message.created_at.strftime('%H:%M') if message.created_at else '' }}</span>
-          </div>
+    {% if active_user %}
+      <div class="chat-header">
+        <img src="{{ active_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ active_user.username }}'s avatar" class="chat-avatar">
+        <div class="chat-header-info">
+          <span class="chat-name">{{ active_user.username or 'Unknown' }}</span>
+          <span class="chat-status">{{ active_user.status or 'Offline' }}</span>
         </div>
-      {% endfor %}
-    </div>
+      </div>
 
-    <div class="chat-input">
-      <button class="btn-attach" id="attachBtn">📎</button>
-      <input type="text" id="messageInput" placeholder="Type a message">
-      <button id="sendBtn" class="btn-send">Send</button>
-    </div>
+      <div class="chat-messages" id="chatMessages" data-thread-id="{{ thread_id }}">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+              <div class="message-content">{{ message.content or '' }}</div>
+              <div class="message-meta">
+                <span class="message-time">{{ message.created_at.strftime('%H:%M') if message.created_at else '' }}</span>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="no-messages">No messages yet</p>
+        {% endif %}
+      </div>
+
+      <div class="chat-input">
+        <button class="btn-attach" id="attachBtn" aria-label="Attach a file">📎</button>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendBtn" class="btn-send" aria-label="Send message">Send</button>
+      </div>
+    {% else %}
+      <div class="no-active-chat">
+        <p>Please select a chat to start messaging.</p>
+      </div>
+    {% endif %}
   </div>
 
 </div>

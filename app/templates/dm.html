@@ -107,8 +107,8 @@
 </div>
 
 <script>
-  // small global so client knows current user (adjust in your view context if you want)
-  window.CURRENT_USERNAME = "{{ current_user.username|escape }}";
+  window.CURRENT_USER = "{{ current_user.username }}";
 </script>
+
 <script src="{{ url_for('static', filename='js/dm.js') }}"></script>
 {% endblock %}

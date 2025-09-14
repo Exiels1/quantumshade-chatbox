@@ -121,3 +121,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // gentle auto-scroll on load
   setTimeout(()=> scrollToBottom(messagesEl, false), 50);
 });
+document.addEventListener('DOMContentLoaded', () => {
+  const threadId = chatMessages.dataset.threadId;
+
+  // Join DM room
+  socket.emit('join_dm', { thread_id: threadId });
+
+  // Send
+  sendBtn.addEventListener('click', () => {
+    const message = messageInput.value.trim();
+    if (message) {
+      socket.emit('send_dm', { thread_id: threadId, text: message });
+      messageInput.value = '';
+    }
+  });
+
+  // Receive
+  socket.on('new_dm', (data) => {
+    if (data.thread_id === threadId) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', data.sender === window.CURRENT_USER ? 'sent' : 'received');
+      msgDiv.innerHTML = `
+        <div class="bubble">
+          <div class="message-content">${data.content}</div>
+          <div class="message-meta">${new Date(data.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+        </div>
+      `;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  });
+});

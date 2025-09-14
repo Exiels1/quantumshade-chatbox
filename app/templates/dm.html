@@ -1,74 +1,114 @@
 {% extends 'base.html' %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dm.css') }}">
-<div class="dm-container">
 
-  <!-- Left Sidebar -->
-  <div class="chats-sidebar">
-    <div class="profile-header">
-      <img src="{{ current_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="Your avatar" class="profile-avatar">
-      <span class="profile-name">{{ current_user.username or 'Guest' }}</span>
+<div class="qs-dm-root">
+
+  <!-- animated lightning background -->
+  <div class="qs-lightning" aria-hidden="true"></div>
+
+  <aside class="qs-sidebar">
+    <div class="qs-profile">
+      <div class="qs-avatar-wrap">
+        <img src="{{ current_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ current_user.username }}" class="qs-avatar">
+        <span class="qs-avatar-glow"></span>
+      </div>
+      <div class="qs-user-meta">
+        <div class="qs-username">{{ current_user.username or 'Guest' }}</div>
+        <div class="qs-subtle">QuantumShade</div>
+      </div>
     </div>
-    <div class="chat-search">
-      <input type="text" placeholder="Search chats" id="chatSearch">
+
+    <div class="qs-search">
+      <input id="chatSearch" placeholder="Search chats..." />
     </div>
-    <div class="chat-list" id="chatList">
+
+    <nav class="qs-chat-list" id="chatList" aria-label="Conversations">
       {% if chats %}
         {% for chat in chats %}
-          <a href="{{ url_for('main.dm', username=chat.partner.username) }}" class="chat-list-item {% if chat.partner.username == active_username %}active{% endif %}" data-thread="{{ chat.thread_id }}">
-            <img src="{{ chat.partner.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ chat.partner.username }}'s avatar" class="chat-avatar">
-            <div class="chat-info">
-              <span class="chat-name">{{ chat.partner.username or 'Unknown' }}</span>
-              <span class="chat-preview">{{ chat.last_message_preview or 'No messages yet' }}</span>
+          {# chat.partner.username, chat.thread_id, chat.last_message_preview, chat.last_message_time expected #}
+          <a href="{{ url_for('main.dm', username=chat.partner.username) }}"
+             class="qs-chat-item {% if chat.partner.username == active_username %}active{% endif %}"
+             data-thread="{{ chat.thread_id }}">
+            <img class="qs-chat-avatar" src="{{ chat.partner.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ chat.partner.username }}">
+            <div class="qs-chat-meta">
+              <div class="qs-chat-name">{{ chat.partner.username or 'Unknown' }}</div>
+              <div class="qs-chat-preview">{{ chat.last_message_preview or 'No messages yet' }}</div>
             </div>
-            <span class="chat-time">{{ chat.last_message_time or '' }}</span>
+            <div class="qs-chat-time">{{ chat.last_message_time or '' }}</div>
           </a>
         {% endfor %}
       {% else %}
-        <p class="no-chats">No chats available</p>
+        <div class="qs-no-chats">No chats available — start a new one.</div>
       {% endif %}
-    </div>
-  </div>
+    </nav>
+  </aside>
 
-  <!-- Right Panel -->
-  <div class="chat-window">
+  <main class="qs-chat-panel" role="main">
     {% if active_user %}
-      <div class="chat-header">
-        <img src="{{ active_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ active_user.username }}'s avatar" class="chat-avatar">
-        <div class="chat-header-info">
-          <span class="chat-name">{{ active_user.username or 'Unknown' }}</span>
-          <span class="chat-status">{{ active_user.status or 'Offline' }}</span>
+      <header class="qs-header">
+        <div class="qs-header-left">
+          <div class="qs-avatar-wrap small">
+            <img src="{{ active_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="{{ active_user.username }}" class="qs-avatar">
+            <span class="qs-online {% if active_user.status == 'Online' %}visible{% endif %}"></span>
+            <span class="qs-avatar-glow small-glow"></span>
+          </div>
+          <div class="qs-header-info">
+            <div class="qs-chat-name">{{ active_user.username or 'Unknown' }}</div>
+            <div class="qs-chat-sub">{{ active_user.status or 'Offline' }}</div>
+          </div>
         </div>
-      </div>
+        <div class="qs-header-actions">
+          <button id="profileBtn" class="qs-icon-btn" title="View profile">⚡</button>
+        </div>
+      </header>
 
-      <div class="chat-messages" id="chatMessages" data-thread-id="{{ thread_id }}">
+      <section id="chatMessages" class="qs-messages" data-thread-id="{{ thread_id }}">
         {% if messages %}
           {% for message in messages %}
-            <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
-              <div class="message-content">{{ message.content or '' }}</div>
-              <div class="message-meta">
-                <span class="message-time">{{ message.created_at.strftime('%H:%M') if message.created_at else '' }}</span>
+            <div class="qs-message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}"
+                 data-message-id="{{ message.id or '' }}">
+              <div class="qs-bubble">
+                <div class="qs-msg-content">{{ message.content|default('') }}</div>
+                <div class="qs-msg-meta">
+                  <span class="qs-time">{{ message.created_at.strftime('%H:%M') if message.created_at else '' }}</span>
+                  {% if message.sender_id == current_user.id %}
+                    <span class="qs-status">●</span> {# placeholder for ticks/delivery #}
+                  {% endif %}
+                </div>
               </div>
             </div>
           {% endfor %}
         {% else %}
-          <p class="no-messages">No messages yet</p>
+          <div class="qs-empty-spot">No messages yet — say hello.</div>
         {% endif %}
-      </div>
+      </section>
 
-      <div class="chat-input">
-        <button class="btn-attach" id="attachBtn" aria-label="Attach a file">📎</button>
-        <input type="text" id="messageInput" placeholder="Type a message">
-        <button id="sendBtn" class="btn-send" aria-label="Send message">Send</button>
-      </div>
+      <footer class="qs-input-bar" role="form" aria-label="Message input">
+        <button id="attachBtn" class="qs-attach" title="Attach">📎</button>
+        <div class="qs-input-wrap">
+          <input id="messageInput" autocomplete="off" placeholder="Type a message..." />
+          <div id="typingIndicator" class="qs-typing" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <button id="sendBtn" class="qs-send" title="Send"><span class="qs-bolt">⚡</span></button>
+      </footer>
+
     {% else %}
-      <div class="no-active-chat">
-        <p>Please select a chat to start messaging.</p>
+      <div class="qs-no-active">
+        <div class="qs-empty-landing">
+          <h3>Pick a chat</h3>
+          <p>Choose a conversation from the left to begin. QuantumShade awaits.</p>
+        </div>
       </div>
     {% endif %}
-  </div>
-
+  </main>
 </div>
 
+<script>
+  // small global so client knows current user (adjust in your view context if you want)
+  window.CURRENT_USERNAME = "{{ current_user.username|escape }}";
+</script>
 <script src="{{ url_for('static', filename='js/dm.js') }}"></script>
 {% endblock %}

@@ -6,27 +6,53 @@ const sendBtn = document.getElementById('sendBtn');
 const chatMessages = document.getElementById('chatMessages');
 const threadId = chatMessages.dataset.threadId;
 
-// Send a message
+// These should be injected from Flask into your template
+// Example in Jinja: <script>window.CURRENT_USER_ID={{ current_user.id }};</script>
+const currentUserId = window.CURRENT_USER_ID;
+
+// Helper to append message
+function appendMessage(data) {
+  const isMe = data.sender_id === currentUserId;
+
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('message', isMe ? 'sent' : 'received');
+
+  wrapper.innerHTML = `
+    <img src="${data.sender_avatar}" class="msg-avatar">
+    <div class="bubble">
+      <div class="message-content">${data.content}</div>
+      <div class="message-meta">
+        <span class="message-time">
+          ${new Date(data.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </span>
+      </div>
+    </div>
+  `;
+
+  chatMessages.appendChild(wrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight; // Auto scroll
+}
+
+// Send message
 sendBtn.addEventListener('click', () => {
-  const message = messageInput.value.trim();
-  if (message) {
-    socket.emit('send_dm', { thread_id: threadId, text: message });
-    messageInput.value = ''; // Clear the input
+  const text = messageInput.value.trim();
+  if (text) {
+    socket.emit('send_dm', { thread_id: threadId, text });
+    messageInput.value = ''; // Clear input
   }
 });
 
-// Receive a new message
+// Press Enter to send
+messageInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+
+// Receive new message
 socket.on('new_dm', (data) => {
-  if (data.thread_id === threadId) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', data.sender === currentUser ? 'sent' : 'received');
-    messageDiv.innerHTML = `
-      <div class="message-content">${data.content}</div>
-      <div class="message-meta">
-        <span class="message-time">${new Date(data.created_at).toLocaleTimeString()}</span>
-      </div>
-    `;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the bottom
+  if (data.thread_id === parseInt(threadId)) {
+    appendMessage(data);
   }
 });

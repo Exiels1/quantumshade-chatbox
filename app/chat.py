@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_socketio import emit, join_room
 from . import db
-from .models import DirectMessage, Thread
+from .models import DirectMessage
 from datetime import datetime
 
 def make_dm_room(thread_id):

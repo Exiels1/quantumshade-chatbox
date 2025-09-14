@@ -23,15 +23,31 @@ def chat():
 @main_bp.route('/dm/<username>')
 @login_required
 def dm(username):
-    other = User.query.filter_by(username=username).first_or_404()
-    a, b = sorted([current_user.id, other.id])
-    thread = DirectThread.query.filter_by(a_id=a, b_id=b).first()
-    if not thread:
-        thread = DirectThread(a_id=a, b_id=b)
-        db.session.add(thread)
-        db.session.commit()
-    dms = DirectMessage.query.filter_by(thread_id=thread.id).order_by(DirectMessage.created_at.asc()).limit(200).all()
-    return render_template('dm.html', other=other, thread_id=thread.id, dms=dms)
+    active_user = current_user
+
+    other = User.query.filter_by(username=username).first()
+    if not other:
+        return redirect(url_for('main.chat'))
+
+    thread = DirectMessage.query.filter(
+        (DirectMessage.sender_id == active_user.id) & (DirectMessage.recipient_id == other.id) |
+        (DirectMessage.sender_id == other.id) & (DirectMessage.recipient_id == active_user.id)
+    ).order_by(DirectMessage.timestamp.asc()).all()
+
+    DirectMessage.query.filter_by(
+        recipient_id=active_user.id,
+        sender_id=other.id,
+        is_read=False
+    ).update({"is_read": True})
+    db.session.commit()
+
+    return render_template(
+        'dm.html',
+        active_user=active_user,
+        other=other,
+        thread_id=f"{active_user.id}-{other.id}",
+        dms=thread
+    )
 
 @main_bp.route('/profile', methods=['GET','POST'])
 @login_required

@@ -54,3 +54,4 @@ def profile():
         flash("Profile updated", "success")
         return redirect(url_for('main.profile'))
     return render_template('profile.html')
+

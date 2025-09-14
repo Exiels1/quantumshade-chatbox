@@ -1,3 +1,4 @@
+from flask import render_template, request
 from flask_login import current_user
 from flask_socketio import emit, join_room
 from . import db
@@ -43,3 +44,36 @@ def register_socketio_handlers(sio):
             'thread_id': thread_id
         }
         emit('new_dm', msg_payload, to=make_dm_room(thread_id))
+
+@app.route('/chat/<int:conversation_id>')
+def chat(conversation_id):
+    # Fetch the current user (assuming you have a way to get the logged-in user)
+    current_user = get_current_user()
+
+    # Fetch the conversation's messages
+    messages = DirectMessage.query.filter_by(conversation_id=conversation_id).all()
+
+    # Count unread messages for this conversation
+    unread_count = DirectMessage.query.filter_by(
+        recipient_id=current_user.id,
+        sender_id=conversation_id,  # Assuming sender_id is the conversation partner's ID
+        is_read=False
+    ).count()
+
+    # Mark unread messages as read
+    DirectMessage.query.filter_by(
+        recipient_id=current_user.id,
+        sender_id=conversation_id,
+        is_read=False
+    ).update({"is_read": True})
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Render the chat template
+    return render_template(
+        'chat.html',
+        messages=messages,
+        unread_count=unread_count,
+        current_user=current_user
+    )

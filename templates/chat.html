@@ -57,6 +57,17 @@
                 </div>
                 {% endfor %}
             </div>
+                <div class="chat-item">
+                    <div class="chat-info">
+                        <span class="chat-name">{{ chat.user.username }}</span>
+                        <span class="last-message">{{ chat.last_message }}</span>
+                    </div>
+
+                    {% if chat.unread_count > 0 %}
+                    <span class="badge">{{ chat.unread_count }}</span>
+                    {% endif %}
+                </div>
+
 
             <!-- Input -->
             <div class="message-input">

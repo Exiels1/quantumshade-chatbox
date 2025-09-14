@@ -214,3 +214,13 @@ body, html {
         flex: 1;
     }
 }
+.badge {
+    background: #25D366; /* WhatsApp green */
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 7px;
+    border-radius: 50%;
+    margin-left: 8px;
+    font-weight: bold;
+    box-shadow: 0 0 5px #25D366, 0 0 10px #25D366;
+}

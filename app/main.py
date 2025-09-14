@@ -20,14 +20,14 @@ def chat():
     users = User.query.order_by(User.username.asc()).all()
     return render_template('chat.html', messages=messages, users=users)
 
-@main_bp.route('/dm/<username>')
+@main_bp.route('/dm/<string:id>')
 @login_required
-def dm(username):
+def dm(id):
     active_user = current_user
 
-    other = User.query.filter_by(username=username).first()
+    other = User.query.get(id)
     if not other:
-        return redirect(url_for('main.chat'))
+        return "Conversation not found", 404
 
     thread = DirectMessage.query.filter(
         (DirectMessage.sender_id == active_user.id) & (DirectMessage.recipient_id == other.id) |

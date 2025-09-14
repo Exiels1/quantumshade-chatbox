@@ -1,30 +1,60 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="qs-grid">
-  <aside class="qs-side">
-    <a href="{{ url_for('main.chat') }}">← Back to Global</a>
-    <div class="qs-user">
-      <div class="avatar" style="background-image:url('{{ url_for('static', filename=other.avatar) if other.avatar else '' }}')"></div>
-      <div>
-        <div class="name">@{{ other.username }}</div>
-        <div class="status">{{ other.status }}</div>
-      </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dm.css') }}">
+<div class="dm-container">
+
+  <!-- Left Sidebar -->
+  <div class="chats-sidebar">
+    <div class="profile-header">
+      <img src="{{ current_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="profile-avatar">
+      <span class="profile-name">{{ current_user.username }}</span>
     </div>
-  </aside>
-  <section class="qs-chat">
-    <div id="messages" class="qs-messages">
-      {% for m in dms %}
-        <div class="msg"><span class="u">{{ 'You' if m.sender_id==current_user.id else other.username }}</span><span class="t">{{ m.created_at.strftime('%H:%M') }}</span><div class="c">{{ m.content }}</div></div>
+    <div class="chat-search">
+      <input type="text" placeholder="Search chats" id="chatSearch">
+    </div>
+    <div class="chat-list" id="chatList">
+      {% for chat in chats %}
+        <a href="{{ url_for('main.dm', username=chat.partner.username) }}" class="chat-list-item {% if chat.partner.username == active_username %}active{% endif %}" data-thread="{{ chat.thread_id }}">
+          <img src="{{ chat.partner.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="chat-avatar">
+          <div class="chat-info">
+            <span class="chat-name">{{ chat.partner.username }}</span>
+            <span class="chat-preview">{{ chat.last_message_preview }}</span>
+          </div>
+          <span class="chat-time">{{ chat.last_message_time }}</span>
+        </a>
       {% endfor %}
     </div>
-    <form id="chat-form" class="qs-chat-form">
-      <input id="chat-input" placeholder="Message @{{ other.username }}..." autocomplete="off" />
-      <button>Send</button>
-    </form>
-  </section>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="chat-window">
+    <div class="chat-header">
+      <img src="{{ active_user.avatar_url or url_for('static', filename='img/avatars/user_2.jpg') }}" alt="avatar" class="chat-avatar">
+      <div class="chat-header-info">
+        <span class="chat-name">{{ active_user.username }}</span>
+        <span class="chat-status">{{ active_user.status }}</span>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages" data-thread-id="{{ thread_id }}">
+      {% for message in messages %}
+        <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+          <div class="message-content">{{ message.content }}</div>
+          <div class="message-meta">
+            <span class="message-time">{{ message.created_at.strftime('%H:%M') if message.created_at else '' }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="chat-input">
+      <button class="btn-attach" id="attachBtn">📎</button>
+      <input type="text" id="messageInput" placeholder="Type a message">
+      <button id="sendBtn" class="btn-send">Send</button>
+    </div>
+  </div>
+
 </div>
-<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-<script>
-  window.QS = { mode: "dm", thread_id: {{ thread_id }} };
-</script>
+
+<script src="{{ url_for('static', filename='js/dm.js') }}"></script>
 {% endblock %}

@@ -386,3 +386,77 @@ a.active {
     margin-left: 8px;
   }
 }
+/* ====== QuantumShade Chat Bubbles ====== */
+.msg {
+  max-width: 70%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  position: relative;
+  animation: fadeIn .3s ease;
+}
+
+.msg.incoming {
+  align-self: flex-start;
+  background: #0b0b16;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.msg.outgoing {
+  align-self: flex-end;
+  margin-left: auto;
+  background: linear-gradient(90deg, var(--neon), var(--neon2));
+  color: #0a0a0f;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(124,77,255,0.3), 0 0 18px rgba(0,229,255,0.3);
+}
+
+.msg .time {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-align: right;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(6px);}
+  to   {opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive tweak for bubbles */
+@media only screen and (max-width: 600px) {
+  .msg {
+    max-width: 85%;
+    font-size: 13px;
+  }
+}
+/* WhatsApp-style chat bubbles */
+.msg.me {
+  align-self: flex-end;
+  background: linear-gradient(145deg, var(--neon), var(--neon2));
+  color: #0a0a0f;
+  border-radius: 16px 16px 4px 16px;
+  max-width: 75%;
+  padding: 10px 14px;
+  position: relative;
+}
+
+.msg.other {
+  align-self: flex-start;
+  background: #0b0b16;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 16px 16px 16px 4px;
+  max-width: 75%;
+  padding: 10px 14px;
+  position: relative;
+}
+
+.msg.me .t,
+.msg.other .t {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 4px;
+}

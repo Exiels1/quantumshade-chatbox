@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumShade Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quantumshade.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="conversations">
+                {% for conversation in conversations %}
+                <div class="conversation {% if conversation.id == current_conversation.id %}active{% endif %}">
+                    <div class="avatar">
+                        {% if conversation.avatar %}
+                        <img src="{{ url_for('static', filename='img/avatars/' + conversation.avatar) }}" alt="Avatar">
+                        {% else %}
+                        {{ conversation.name[0] }}
+                        {% endif %}
+                    </div>
+                    <div class="details">
+                        <div class="name">{{ conversation.name }}</div>
+                        <div class="last-message">{{ conversation.last_message }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="chat-window">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="avatar">
+                    {% if current_conversation.avatar %}
+                    <img src="{{ url_for('static', filename='img/avatars/' + current_conversation.avatar) }}" alt="Avatar">
+                    {% else %}
+                    {{ current_conversation.name[0] }}
+                    {% endif %}
+                </div>
+                <div class="details">
+                    <div class="name">{{ current_conversation.name }}</div>
+                    <div class="status">Online</div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {% if message.user_id == current_user.id %}outgoing{% else %}incoming{% endif %}">
+                    <div class="bubble">
+                        {{ message.content }}
+                        <div class="timestamp">{{ message.timestamp }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Input -->
+            <div class="message-input">
+                <input type="text" id="message-box" placeholder="Type a message...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Dark background for Exiels vibe */
+    color: #ffffff;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background-color: #1e1e1e; /* Dark gray for sidebar */
+    border-right: 1px solid #333;
+    overflow-y: auto;
+}
+
+.conversations {
+    padding: 10px;
+}
+
+.conversation {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.conversation:hover {
+    background-color: #292929;
+    box-shadow: 0 0 8px #00ffcc; /* Neon glow effect */
+}
+
+.conversation.active {
+    background-color: #292929;
+    box-shadow: 0 0 8px #00ffcc; /* Highlight active conversation */
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #00ffcc; /* Neon color for avatars */
+    color: #121212;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.details {
+    flex: 1;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.last-message {
+    font-size: 14px;
+    color: #888;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Chat Window */
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #121212;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #333;
+}
+
+.chat-header .avatar {
+    margin-right: 10px;
+}
+
+.chat-header .details {
+    flex: 1;
+}
+
+.chat-header .name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.chat-header .status {
+    font-size: 14px;
+    color: #00ffcc; /* Neon color for status */
+}
+
+/* Messages */
+.messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    display: flex;
+}
+
+.message.incoming {
+    justify-content: flex-start;
+}
+
+.message.outgoing {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.message.incoming .bubble {
+    background-color: #333;
+    color: #fff;
+    border-radius: 20px 20px 20px 0;
+}
+
+.message.outgoing .bubble {
+    background: linear-gradient(45deg, #00ffcc, #0066ff);
+    color: #121212;
+    border-radius: 20px 20px 0 20px;
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #888;
+    position: absolute;
+    bottom: -18px;
+    right: 10px;
+}
+
+/* Message Input */
+.message-input {
+    display: flex;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border-top: 1px solid #333;
+}
+
+#message-box {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #292929;
+    color: #fff;
+    outline: none;
+    font-size: 14px;
+}
+
+#send-button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(45deg, #00ffcc, #0066ff);
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#send-button:hover {
+    box-shadow: 0 0 8px #00ffcc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .chat-window {
+        flex: 1;
+    }
+}

@@ -1,9 +1,10 @@
-from flask import render_template, request
-from flask_login import current_user
+from flask import Blueprint, render_template, request
+from flask_login import current_user, login_required
+from app.models import User, DirectMessage, db
 from flask_socketio import emit, join_room
-from . import db
-from .models import DirectMessage
 from datetime import datetime
+
+chat_bp = Blueprint('chat', __name__)
 
 def make_dm_room(thread_id):
     return f"dm_{thread_id}"
@@ -45,35 +46,36 @@ def register_socketio_handlers(sio):
         }
         emit('new_dm', msg_payload, to=make_dm_room(thread_id))
 
-@app.route('/chat/<int:conversation_id>')
+@chat_bp.route('/chat/<int:conversation_id>')
+@login_required
 def chat(conversation_id):
-    # Fetch the current user (assuming you have a way to get the logged-in user)
-    current_user = get_current_user()
+    # Fetch the active user (current logged-in user)
+    active_user = current_user
 
-    # Fetch the conversation's messages
-    messages = DirectMessage.query.filter_by(conversation_id=conversation_id).all()
+    # Fetch the other user or conversation details
+    other = User.query.get(conversation_id)
+    if not other:
+        return "Conversation not found", 404
 
-    # Count unread messages for this conversation
-    unread_count = DirectMessage.query.filter_by(
-        recipient_id=current_user.id,
-        sender_id=conversation_id,  # Assuming sender_id is the conversation partner's ID
-        is_read=False
-    ).count()
+    # Fetch the thread or messages
+    thread = DirectMessage.query.filter(
+        (DirectMessage.sender_id == active_user.id) & (DirectMessage.recipient_id == other.id) |
+        (DirectMessage.sender_id == other.id) & (DirectMessage.recipient_id == active_user.id)
+    ).order_by(DirectMessage.timestamp.asc()).all()
 
     # Mark unread messages as read
     DirectMessage.query.filter_by(
-        recipient_id=current_user.id,
-        sender_id=conversation_id,
+        recipient_id=active_user.id,
+        sender_id=other.id,
         is_read=False
     ).update({"is_read": True})
-
-    # Commit the changes to the database
     db.session.commit()
 
-    # Render the chat template
+    # Pass all required variables to the template
     return render_template(
-        'chat.html',
-        messages=messages,
-        unread_count=unread_count,
-        current_user=current_user
+        'dm.html',
+        active_user=active_user,
+        other=other,
+        thread_id=f"{active_user.id}-{other.id}",
+        dms=thread
     )

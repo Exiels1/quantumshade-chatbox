@@ -71,3 +71,13 @@ def profile():
         return redirect(url_for('main.profile'))
     return render_template('profile.html')
 
+@main_bp.route('/dm/<string:username>')
+def dm(username):
+    # Fetch the user by username
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return "User not found", 404
+
+    # Route logic here
+    pass
+

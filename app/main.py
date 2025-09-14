@@ -16,24 +16,27 @@ def index():
 @main_bp.route('/chat')
 @login_required
 def chat():
-    messages = Message.query.filter_by(room='global').order_by(Message.created_at.asc()).limit(200).all()
-    users = User.query.order_by(User.username.asc()).all()
-    return render_template('chat.html', messages=messages, users=users)
+    # Redirect to the user's direct messages or another page
+    return redirect(url_for('main.index'))
 
 @main_bp.route('/dm/<int:id>')
 @login_required
 def dm(id):
+    # Fetch the active user (current logged-in user)
     active_user = current_user
 
+    # Fetch the other user by ID
     other = User.query.get(id)
     if not other:
-        return "Conversation not found", 404
+        return "User not found", 404
 
+    # Fetch the thread or messages
     thread = DirectMessage.query.filter(
         (DirectMessage.sender_id == active_user.id) & (DirectMessage.recipient_id == other.id) |
         (DirectMessage.sender_id == other.id) & (DirectMessage.recipient_id == active_user.id)
     ).order_by(DirectMessage.timestamp.asc()).all()
 
+    # Mark unread messages as read
     DirectMessage.query.filter_by(
         recipient_id=active_user.id,
         sender_id=other.id,
@@ -41,6 +44,7 @@ def dm(id):
     ).update({"is_read": True})
     db.session.commit()
 
+    # Pass all required variables to the template
     return render_template(
         'dm.html',
         active_user=active_user,
@@ -70,14 +74,4 @@ def profile():
         flash("Profile updated", "success")
         return redirect(url_for('main.profile'))
     return render_template('profile.html')
-
-@main_bp.route('/dm/<string:username>')
-def dm(username):
-    # Fetch the user by username
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return "User not found", 404
-
-    # Route logic here
-    pass
 

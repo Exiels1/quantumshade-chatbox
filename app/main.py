@@ -20,7 +20,7 @@ def chat():
     users = User.query.order_by(User.username.asc()).all()
     return render_template('chat.html', messages=messages, users=users)
 
-@main_bp.route('/dm/<string:id>')
+@main_bp.route('/dm/<int:id>')
 @login_required
 def dm(id):
     active_user = current_user
